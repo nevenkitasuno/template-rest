@@ -19,9 +19,10 @@ interface CrudEndpoints<
         @query pageSize: int32,
         @query sort: string, // The field to sort by
         @query order: string, // enum The order of sorting ('asc' or 'desc').
+
         // plus query param named by field name and it's value is filter. Only for string fields
         ...CommonParameters,
-    ): PagedResultResponse | InternalServerErrorResponse;
+    ): PagedResultResponse | AppUnauthorizedResponse | InternalServerErrorResponse;
 
     @get
     @route("{id}")
@@ -59,7 +60,7 @@ interface CrudEndpoints<
               @statusCode statusCode: 500;
               @body error: InternalServerError;
           };
-    
+
     @delete
     @route("{id}")
     deleteItem(@path id: IdType, ...CommonParameters):
