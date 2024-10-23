@@ -7,6 +7,6 @@
 
 # Usage
 
-Change `main.tsp`, run `make`
-Or
-Hot reload option: run `make watch`, change `main.tsp`
+Change `main.tsp`, run `make`  
+Or  
+Hot reload option: run `make watch`, change `main.tsp`  
