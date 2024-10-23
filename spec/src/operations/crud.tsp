@@ -19,7 +19,6 @@ interface CrudEndpoints<
         @query pageSize: int32,
         @query sort: string, // The field to sort by
         @query order: string, // enum The order of sorting ('asc' or 'desc').
-
         // plus query param named by field name and it's value is filter. Only for string fields
         ...CommonParameters,
     ): PagedResultResponse | AppUnauthorizedResponse | InternalServerErrorResponse;
