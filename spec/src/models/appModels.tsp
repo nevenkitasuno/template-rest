@@ -1,5 +1,7 @@
 import "@typespec/json-schema";
 
+import "./common/okResponseTemplates.tsp";
+
 // add fields to fulfill specific entity only here
 model TemplateEntityUpsertDto {
     @maxLength(42)
@@ -7,12 +9,13 @@ model TemplateEntityUpsertDto {
 }
 
 model TemplateEntityResponseDto extends TemplateEntityUpsertDto {
-    id: TypeSpec.JsonSchema.Format.uuid;
+    id: TypeSpec.JsonSchema.Format.uuid; // here can change Id type
 }
 
-model TemplateEntityPagedResult {
-    items: TemplateEntityResponseDto[];
-    totalCount: int32;
-    pageNumber: int32;
-    pageSize: int32;
+model TemplateEntityPagedResultResponse {
+    ...AppOkResponse<{...PagedResult<TemplateEntityResponseDto>}>
+}
+
+model TemplateEntityOkResponse {
+    ...AppOkResponse<TemplateEntityResponseDto>
 }

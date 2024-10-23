@@ -2,7 +2,7 @@ import "@typespec/http";
 
 using TypeSpec.Http;
 
-model CommonParameters {
+model VersionFromHeader {
     @header
     clientVersion?: string;
 }

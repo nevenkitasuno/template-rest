@@ -3,8 +3,9 @@ import "@typespec/rest";
 import "@typespec/openapi3";
 import "@typespec/json-schema";
 
-import "./src/models/responses.tsp";
-import "./src/models/request.tsp";
+import "./src/models/common/requestParameters.tsp";
+import "./src/models/appModels.tsp";
+import "./src/operations/crud.tsp";
 
 using TypeSpec.Http;
 @service({
@@ -13,71 +14,22 @@ using TypeSpec.Http;
 @server("https://template-example.com", "Template server endpoint")
 namespace TemplateService;
 
+alias TemplateEntityCrud = CrudEndpoints<TemplateEntityOkResponse, TemplateEntityPagedResultResponse, TemplateEntityUpsertDto, TemplateEntityResponseDto, TypeSpec.JsonSchema.Format.uuid, VersionFromHeader>;
+
 @route("/TemplateEntity")
 namespace TemplateEntity {
     @useAuth(BearerAuth)
-    @get
-    op listTemplateEntities(
-        ...CommonParameters,
-    ): TemplateEntityPagedResultResponse | InternalServerErrorResponse;
+    op listTemplateEntities is TemplateEntityCrud.listItems;
 
     @useAuth(BearerAuth) // omit this decorator and InternalServerErrorResponse if don't want auth for method
-    @get
-    op getTemplateEntity(
-        @path id: TypeSpec.JsonSchema.Format.uuid,
-        ...CommonParameters,
-    ):
-        | AppNotFoundResponse
-        | AppUnauthorizedResponse
-        | InternalServerErrorResponse
-        | {
-              @statusCode statusCode: 200;
-              @body templateEntity: TemplateEntityResponseDto;
-          };
+    op getTemplateEntity is TemplateEntityCrud.getItem;
 
     @useAuth(BearerAuth)
-    @post
-    op createTemplateEntity(
-        @body templateEntityUpsertDto: TemplateEntityUpsertDto,
-        ...CommonParameters,
-    ): InternalServerErrorResponse | AppUnauthorizedResponse | {
-        @statusCode statusCode: 201;
-        @body newTemplateEntity: TemplateEntityResponseDto;
-    };
+    op createTemplateEntity is TemplateEntityCrud.createItem;
 
     @useAuth(BearerAuth)
-    @put
-    op updateTemplateEntity(
-        @path id: TypeSpec.JsonSchema.Format.uuid,
-        @body templateEntityUpsertDto: TemplateEntityUpsertDto,
-        ...CommonParameters,
-    ):
-        | AppNotFoundResponse
-        | AppUnauthorizedResponse
-        | InternalServerErrorResponse
-        | {
-              @statusCode statusCode: 200;
-              @body updatedTemplateEntity: TemplateEntityResponseDto;
-          }
-        | {
-              @statusCode statusCode: 400;
-              @body error: ValidationError;
-          }
-        | {
-              @statusCode statusCode: 500;
-              @body error: InternalServerError;
-          };
+    op updateTemplateEntity is TemplateEntityCrud.updateItem;
 
     @useAuth(BearerAuth)
-    @delete
-    op deleteTemplateEntity(
-        @path id: TypeSpec.JsonSchema.Format.uuid,
-        ...CommonParameters,
-    ):
-        | AppNotFoundResponse
-        | InternalServerErrorResponse
-        | AppUnauthorizedResponse
-        | {
-              @statusCode statusCode: 204;
-          };
+    op deleteTemplateEntity is TemplateEntityCrud.deleteItem;
 }
